@@ -1,0 +1,2 @@
+# RSpecExpenses_App
+Expenses_App_to_learn_RSpec
