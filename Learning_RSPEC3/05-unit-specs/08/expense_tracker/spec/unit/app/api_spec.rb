@@ -9,7 +9,7 @@
 require_relative '../../../app/api'
 require 'rack/test'
 
-module ExpenseTracker
+module ExpenseTracker # module Expense Tracker weil dies der name des Programms/Moduls sein soll, dass man dann implementieren kann.
   RSpec.describe API do
     include Rack::Test::Methods
 
