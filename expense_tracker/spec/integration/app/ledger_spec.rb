@@ -4,7 +4,7 @@ require_relative '../../../config/sequel'
 require_relative '../../support/db'
 
 module ExpenseTracker
-  RSpec.describe Ledger do
+  RSpec.describe Ledger, :aggregate_failures do
     let(:ledger) { Ledger.new }
     let(:expense) do
       {
@@ -18,7 +18,8 @@ module ExpenseTracker
       # ... contexts go here ...
 
       context 'with a valid expense' do
-        it 'successfully saves the expense in the DB' do
+        #the example has to matchers/assertions because it is to slow in the ende to give every matcher/assertion which touches the database its own example.
+        it 'successfully saves the expense in the DB'  do
           result = ledger.record(expense)
 
           expect(result).to be_success
