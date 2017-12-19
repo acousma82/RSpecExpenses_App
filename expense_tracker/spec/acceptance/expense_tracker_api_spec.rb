@@ -1,5 +1,6 @@
 require 'rack/test'
 require 'json'
+require 'ox'
 require_relative '../../app/api'
 
 module ExpenseTracker
@@ -10,6 +11,7 @@ def app
 end
 
 def post_expense(expense)
+    header "Content-Type", "application/json" 
     post '/expenses', JSON.generate(expense)
     expect(last_response.status).to eq(200)
 
@@ -17,13 +19,16 @@ def post_expense(expense)
     expect(parsed).to include('expense_id' => a_kind_of(Integer))
     #adds an id key to the expense hash, containing the id from the database
     expense.merge('id' => parsed['expense_id'])
-  end
-    it 'records submitted expenses' do
+end
+
+
+    it 'records submitted expenses in JSON' do
         coffee = post_expense(
             'payee'  => 'Starbucks',
             'amount' => 5.75,
             'date'   => '2017-06-10'
-          )
+        )
+          
     
           zoo = post_expense(
             'payee'  => 'Zoo',

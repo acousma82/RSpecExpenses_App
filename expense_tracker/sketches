@@ -1,0 +1,28 @@
+coffee = post_expense_xml(
+            <payee>Starbucks</payee>
+            <amount>5.75</amount>
+            <date>2017-06-10<7date>
+          )
+
+
+
+          require 'ox'
+
+doc = Ox::Document.new(:version => '1.0')
+
+payee = Ox::Element.new('payee')
+payee[:text] = 'starbucks'
+doc << payee
+
+amount = Ox::Element.new('amount')
+amount[:text] = '5.75'
+doc << amount
+
+date = Ox::Element.new('date')
+date[:text] = '2017-06-10'
+doc << date
+
+xml = Ox.dump(doc)
+puts xml
+doc2 = Ox.parse(xml)
+puts "Same? #{doc == doc2}"

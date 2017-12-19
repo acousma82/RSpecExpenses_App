@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'json'
+require 'ox'
 require_relative 'ledger'
 
 module ExpenseTracker
@@ -17,7 +18,9 @@ module ExpenseTracker
     end
 
     post '/expenses' do
+      #die expense daten werden im json format gesendet und übersetzt)
       expense = JSON.parse(request.body.read)
+      #Das Ergebnis wird mit ledger.record in der Datenbank gespeichert
       result = @ledger.record(expense)
 
       if result.success?
