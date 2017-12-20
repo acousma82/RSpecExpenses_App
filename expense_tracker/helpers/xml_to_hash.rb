@@ -1,12 +1,12 @@
-
-
+require 'ox'
+Ox.default_options=({:with_xml => true})
 def node_to_dict(element)
     dict = Hash.new
     key = nil
     element.nodes.each do |n|
         raise "A dict can only contain elements." unless n.is_a?(::Ox::Element)
         if key.nil?
-            raise "Expected a key, not a #{n.name}." unless 'key' == n.name
+            #raise "Expected a key, not a #{n.name}." unless 'key' == n.name
             key = first_text(n)
         else
             dict[key] = node_to_value(n)
@@ -23,15 +23,12 @@ def node_to_array(element)
     a.push(node_to_value(n))
     a
 end
-
-  
-
 end
 
 
 def node_to_value(node)
 
-  raise "A dict can only contain elements." unless node.is_a?(::Ox::Element)
+  #raise "A dict can only contain elements." unless node.is_a?(::Ox::Element)
   case node.name
 
   when 'key'
@@ -81,17 +78,25 @@ end
 
 
 def parse_gen(xml)
-    doc = Ox.parse(xml)
-    plist = doc.root
-    dict = nil
-    plist.nodes.each do |n|
-
-    if n.is_a?(::Ox::Element)
-        dict = node_to_dict(n)
-    break
+    
+      doc = Ox.parse(xml)
+    
+      plist = doc.root
+    
+      dict = nil
+    
+      plist.nodes.each do |n|
+    
+        if n.is_a?(::Ox::Element)
+    
+          dict = node_to_dict(n)
+    
+          break
+    
+        end
+    
+      end
+    
+      dict
+    
     end
-
-  end
-    dict
-
-end

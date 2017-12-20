@@ -1,4 +1,4 @@
-require 'rack/test'
+eqxitrequire 'rack/test'
 require 'json'
 require 'ox'
 require_relative '../../app/api'
