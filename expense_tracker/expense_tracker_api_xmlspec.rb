@@ -1,4 +1,4 @@
-require 'rack/test'
+eqxitrequire 'rack/test'
 require 'json'
 require 'active_support/core_ext'
 require_relative '../../app/api'

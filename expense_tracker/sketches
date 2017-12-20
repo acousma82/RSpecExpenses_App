@@ -10,17 +10,20 @@ coffee = post_expense_xml(
 
 doc = Ox::Document.new(:version => '1.0')
 
+expenses =  Ox::Element.new('expense')
+doc << expenses
+
 payee = Ox::Element.new('payee')
-payee[:text] = 'starbucks'
-doc << payee
+payee << 'starbucks'
+expenses << payee
 
 amount = Ox::Element.new('amount')
-amount[:text] = '5.75'
-doc << amount
+amount << '5.75'
+expenses << amount
 
 date = Ox::Element.new('date')
-date[:text] = '2017-06-10'
-doc << date
+date << '2017-06-10'
+expenses << date
 
 xml = Ox.dump(doc)
 puts xml
