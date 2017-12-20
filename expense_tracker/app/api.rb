@@ -18,7 +18,7 @@ module ExpenseTracker
     end
 
     post '/expenses' do
-      #die expense daten werden im json format gesendet und übersetzt)
+      #die expense daten werden im json format gesendet und in einen Array übersetzt
       expense = JSON.parse(request.body.read)
       #Das Ergebnis wird mit ledger.record in der Datenbank gespeichert
       result = @ledger.record(expense)

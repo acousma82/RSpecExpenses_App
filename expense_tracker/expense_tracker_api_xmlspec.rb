@@ -1,6 +1,6 @@
 require 'rack/test'
 require 'json'
-require 'ox'
+require 'active_support/core_ext'
 require_relative '../../app/api'
 
 module ExpenseTracker
@@ -23,7 +23,8 @@ end
 
 def post_expense_xml(expense)
     header "Content-Type", "application/xml" 
-    post '/expenses', Ox.to_xml(expense)
+    
+    post '/expenses', Hash.to_xml(expense)
     expect(last_response.status).to eq(200)
   
     parsed = Ox.parse(last_response.body)
