@@ -29,3 +29,12 @@ xml = Ox.dump(doc)
 puts xml
 doc2 = Ox.parse(xml)
 puts "Same? #{doc == doc2}"
+
+ox_nodes.reduce({}) do |hash, node|
+  hash[node.instance_variable_get('@value')] = node.text
+  hash
+end
+
+ox_nodes.reduce({}) do |hash, node|
+  hash.tap { |h| h[node.instance_variable_get('@value')] = node.string } 
+end

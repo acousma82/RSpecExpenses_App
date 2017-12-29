@@ -5,8 +5,18 @@ module ExpenseTracker
 
   class Ledger
     def record(expense)
-      unless expense.key?('payee')
+      unless expense.key?('payee') || expense.key?(:payee)
         message = 'Invalid expense: `payee` is required'
+        return RecordResult.new(false, nil, message)
+      end
+
+      unless expense.key?('amount') || expense.key?(:amount)
+        message = 'Invalid expense: `amount` is required'
+        return RecordResult.new(false, nil, message)
+      end
+
+      unless expense.key?('date') || expense.key?(:date)
+        message = 'Invalid expense: `date` is required'
         return RecordResult.new(false, nil, message)
       end
       

@@ -6,7 +6,7 @@ def node_to_dict(element)
     element.nodes.each do |n|
         raise "A dict can only contain elements." unless n.is_a?(::Ox::Element)
         if key.nil?
-            #raise "Expected a key, not a #{n.name}." unless 'key' == n.name
+            raise "Expected a key, not a #{n.name}." unless 'key' == n.name
             key = first_text(n)
         else
             dict[key] = node_to_value(n)
@@ -28,7 +28,7 @@ end
 
 def node_to_value(node)
 
-  #raise "A dict can only contain elements." unless node.is_a?(::Ox::Element)
+  raise "A dict can only contain elements." unless node.is_a?(::Ox::Element)
   case node.name
 
   when 'key'
