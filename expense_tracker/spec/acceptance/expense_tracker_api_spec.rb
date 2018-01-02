@@ -41,8 +41,8 @@ def create_xml(expense, pay, amo, dat)
   xml = Ox.dump(xml)
 end
 
-# post the expense as an xml data
-def post_expense_xml(expense, pay, amo, dat)
+# post the expense as an xml document/string, goal: the expense can  be posted as a hash
+def post_expense_xml(expense, pay, amo, dat) #the best 
   #request header bekommt Content-type = xml
   header "Content-Type", "application/xml" 
   #xml dokument wird erstellt
@@ -55,7 +55,8 @@ def post_expense_xml(expense, pay, amo, dat)
   parsed = # #a hash out of the (last_response.body)(in xml). But how to do this?
   expect(parsed).to include('expense_id' => a_kind_of(Integer))
   #adds an id key to the expense hash, containing the id from the database
-  xml_expense_hash = #a hash out of the expense_xml_data generated with Ox
+  xml_expense_hash = #a hash out of the expense_xml_data generated with Ox. goal: this is not needed, becuse the expense_hash is there already.
+  #adds an id key to the expense hash, containing the id from the database
   xml_hash.merge('id' => parsed['expense_id'])
 end
 
