@@ -25,4 +25,4 @@
 # Ignore Spring files.
 /spring/*.pid
 
-/.DS_Store
+.DS_Store

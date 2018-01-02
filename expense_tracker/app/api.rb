@@ -2,6 +2,8 @@ require 'sinatra/base'
 require 'json'
 require 'ox'
 require_relative 'ledger'
+require_relative 'XML'
+require "byebug"
 
 module ExpenseTracker
   class API < Sinatra::Base
@@ -17,22 +19,91 @@ module ExpenseTracker
       super()
     end
 
-    post '/expenses' do
-      #die expense daten werden im json format gesendet und übersetzt)
-      expense = JSON.parse(request.body.read)
-      #Das Ergebnis wird mit ledger.record in der Datenbank gespeichert
-      result = @ledger.record(expense)
 
-      if result.success?
-        JSON.generate('expense_id' => result.expense_id)
+  def create_xml(expenses)
+    Ox.default_options=({:with_xml => true})
+    doc = Ox::Document.new(:version => '1.0')
+    if expenses.empty?
+      exp = Ox::Element.new("expenses")
+      xml = doc << exp
+    else
+      xml = expenses.inject(doc) { |acc, expense| acc << create_nodes(expense) }
+    end
+    Ox.dump(xml)
+  end
+
+  def create_nodes(expense)
+    exp = Ox::Element.new("expense")
+    expense.each do |key, value|
+      e = Ox::Element.new(key)
+      if value.is_a? String
+        e << value
+      elsif value.kind_of? Date
+        e << value.strftime("%Y-%m-%d")
       else
-        status 422
-        JSON.generate('error' => result.error_message)
+        e << value.to_s
+      end
+      exp << e
+    end
+    exp
+  end
+# von Paul xml = expense.inject(doc) {|acc, exp| acc << Ox::Element.new(exp) }
+def create_xml_single(exp)
+  
+      Ox.default_options=({:with_xml => false})
+      doc = Ox::Document.new(:version => '1.0')
+      exp.each do |key, value|
+      e = Ox::Element.new(key)
+      e << value.to_s
+      doc << e
+    end
+  xml =Ox.dump(doc)
+  xml 
+  end
+    post '/expenses' do
+      if request.media_type == 'application/json'
+      #die expense daten werden im json format gesendet und in einen Array übersetzt
+        expense = JSON.parse(request.body.read)
+      #Das Ergebnis wird mit ledger.record in der Datenbank gespeichert
+        result = @ledger.record(expense)
+        #request response dependent on whether the request was a success
+        if result.success?
+          headers \
+              'Content-Type' => 'application/json'
+          JSON.generate('expense_id' => result.expense_id)
+        else
+          status 422
+          headers \
+            'Content-Type' => 'application/json'
+          JSON.generate('error' => result.error_message)
+        end
+
+      elsif request.media_type == 'text/xml'
+        expense = Ox.load(request.body.read, mode: :hash)
+        result = @ledger.record(expense)
+        if result.success?
+          headers \
+            'Content-Type' => 'text/xml'
+            create_xml_single('expense_id' => result.expense_id)
+        else
+          status 422
+          headers \
+            'Content-Type' => 'text/xml'
+          create_xml_single('error' => result.error_message)
+        end
       end
     end
 
     get '/expenses/:date' do
-      JSON.generate(@ledger.expenses_on(params[:date]))
+      if request.media_type == 'application/json'
+        headers \
+        'Content-Type' => 'application/json'
+        JSON.generate(@ledger.expenses_on(params[:date]))
+      elsif request.media_type == 'text/xml'
+        headers \
+        'Content-Type' => 'text/xml'
+        create_xml(@ledger.expenses_on(params[:date]))
+      end
     end
   end
 end
